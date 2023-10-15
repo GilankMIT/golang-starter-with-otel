@@ -2,23 +2,23 @@ package infra
 
 import (
 	payment_service2 "go-otel/app/integration/payment_service"
-	shared2 "go-otel/app/integration/shared"
-	payment_service3 "go-otel/app/service/payment_service"
-	shared3 "go-otel/app/service/shared"
+	integrationShared "go-otel/app/integration/shared"
+	payment_service3 "go-otel/app/service/order_service"
+	serviceShared "go-otel/app/service/shared"
 )
 
-func GetOptions() (shared3.ServiceOptions, error) {
+func GetOptions() (serviceShared.ServiceOptions, error) {
 	clientOption, err := GetIntegration()
 	if err != nil {
-		return shared3.ServiceOptions{}, err
+		return serviceShared.ServiceOptions{}, err
 	}
-	return shared3.ServiceOptions{
-		payment_service3.NewPaymentService(clientOption.PaymentServiceClient),
+	return serviceShared.ServiceOptions{
+		payment_service3.NewOrderService(clientOption.PaymentServiceClient),
 	}, nil
 }
 
-func GetIntegration() (shared2.ClientOption, error) {
-	return shared2.ClientOption{
+func GetIntegration() (integrationShared.ClientOption, error) {
+	return integrationShared.ClientOption{
 		payment_service2.NewPaymentServiceClient(),
 	}, nil
 }

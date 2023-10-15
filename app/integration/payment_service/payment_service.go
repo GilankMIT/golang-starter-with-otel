@@ -3,7 +3,7 @@ package payment_service
 import (
 	"context"
 	"errors"
-	template2 "go-otel/app/util/template"
+	"go-otel/app/util/template"
 )
 
 const SERVICE_NAME = "integration.PaymentService"
@@ -37,7 +37,7 @@ func NewPaymentServiceClient() PaymentServiceClient {
 
 func (p PaymentServiceClientImpl) Pay(ctx context.Context, req PayRequest) (resp PayResponse, err error) {
 
-	err = template2.ServiceExec(ctx,
+	err = template.IntegrationTemplateExec(ctx,
 		SERVICE_NAME,
 		req,
 

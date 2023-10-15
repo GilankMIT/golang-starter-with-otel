@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"flag"
-	infra2 "go-otel/app/infra"
+	"go-otel/app/infra"
 	"go-otel/app/util/constants"
-	log_util2 "go-otel/app/util/log_util"
+	"go-otel/app/util/logutil"
 	"log"
 	"os"
 	"os/signal"
@@ -16,20 +16,20 @@ const SERVICE_NAME = "main"
 
 func main() {
 	ctx := context.Background()
-	tp, err := infra2.NewTraceProvider(ctx)
+	tp, err := infra.NewTraceProvider(ctx)
 
-	appTrace := tp.Tracer(constants.SERVICE_NAME)
+	appTrace := tp.Tracer(constants.APP_NAME)
 	ctx, _ = appTrace.Start(ctx, SERVICE_NAME)
 	if err != nil {
-		log_util2.LogError(ctx, "failed to initiate new application", err.Error())
+		logutil.LogError(ctx, "failed to initiate new application", err.Error())
 		return
 	}
 
-	log_util2.LogInfo(ctx, "starting app")
+	logutil.LogInfo(ctx, "starting app")
 
 	defer func() {
 		if err := tp.Shutdown(context.Background()); err != nil {
-			log_util2.LogError(ctx, "failed to destroy tracer", err.Error())
+			logutil.LogError(ctx, "failed to destroy tracer", err.Error())
 			return
 		}
 	}()
@@ -38,9 +38,9 @@ func main() {
 	flag.DurationVar(&wait, "graceful-timeout", time.Second*15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
 	flag.Parse()
 
-	srv, err := infra2.HandleBasicRouter()
+	srv, err := infra.HandleBasicRouter()
 	if err != nil {
-		log_util2.LogError(ctx, "failed to start router", err.Error())
+		logutil.LogError(ctx, "failed to start router", err.Error())
 		return
 	}
 

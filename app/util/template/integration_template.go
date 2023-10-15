@@ -9,16 +9,16 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 )
 
-func ServiceTemplateExec(ctx context.Context, serviceName string, req any, fPre FuncCallbackPreCheck, f FuncCallbackProcess, fPost FuncCallbackPostProcess) error {
+func IntegrationTemplateExec(ctx context.Context, serviceName string, req any, fPre FuncCallbackPreCheck, f FuncCallbackProcess, fPost FuncCallbackPostProcess) error {
 
 	ctx, span := createNewSpan(ctx, serviceName)
 	defer func() {
 		span.End()
 	}()
 
-	ctx = context.WithValue(ctx, constants.LOG_APPENDER_CTX_KEY, logutil.SERVICE_APPENDER)
+	ctx = context.WithValue(ctx, constants.LOG_APPENDER_CTX_KEY, logutil.INTEGRATION_APPENDER)
 
-	logutil.LogInfo(ctx, fmt.Sprintf("%s service invoke param ", serviceName), req)
+	logutil.LogInfo(ctx, fmt.Sprintf("%s client invoke param ", serviceName), req)
 
 	//precheck
 	err := fPre(req)
@@ -33,7 +33,8 @@ func ServiceTemplateExec(ctx context.Context, serviceName string, req any, fPre 
 		span.RecordError(err)
 		return err
 	}
-	logutil.LogInfo(ctx, fmt.Sprintf("%s service invoke result ", serviceName), res)
+	logutil.LogInfo(ctx, fmt.Sprintf("%s client invoke result ", serviceName), res)
+
 	if fPost != nil {
 		//postprocess
 		fPost(req, res)

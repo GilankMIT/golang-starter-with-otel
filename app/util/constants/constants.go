@@ -1,7 +1,7 @@
 package constants
 
 const (
-	SERVICE_NAME   = "PaymentService"
-	LOGGER_CTX_KEY = "logger_ctx"
-	TRACER_CTX_KEY = "tracer_ctx"
+	APP_NAME             = "order_service"
+	LOG_APPENDER_CTX_KEY = "log_appender"
+	TRACER_CTX_KEY       = "tracer"
 )
