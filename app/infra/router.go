@@ -2,19 +2,19 @@ package infra
 
 import (
 	"github.com/gorilla/mux"
-	orderPayment "go-otel-example/app/delivery/order_payment"
-	shared2 "go-otel-example/app/service/shared"
-	middleware2 "go-otel-example/app/util/middleware"
+	"go-boilerplate/common/util/middleware"
+	orderPayment "go-boilerplate/presentation/order_payment"
+	"go-boilerplate/service/shared"
 	"log"
 	"net/http"
 	"time"
 )
 
-func HandleBasicRouter() (*http.Server, error) {
+func HandleBasicRouter(infraOption InfraOption) (*http.Server, error) {
 
 	r := mux.NewRouter()
 
-	serviceOption, err := GetOptions()
+	serviceOption, err := GetOptions(infraOption)
 	if err != nil {
 		return nil, err
 	}
@@ -39,9 +39,9 @@ func HandleBasicRouter() (*http.Server, error) {
 }
 
 func registerMiddleware(r *mux.Router) {
-	r.Use(middleware2.WithOtelTrace)
+	r.Use(middleware.WithOtelTrace)
 }
 
-func registerRoutes(r *mux.Router, options *shared2.ServiceOptions) {
+func registerRoutes(r *mux.Router, options *shared.ServiceOptions) {
 	orderPayment.NewOrderPaymentHTTPController(r, options)
 }

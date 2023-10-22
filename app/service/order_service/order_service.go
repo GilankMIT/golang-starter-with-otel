@@ -3,27 +3,36 @@ package order_service
 import (
 	"context"
 	"errors"
-	"go-otel-example/app/integration/payment_service"
-	"go-otel-example/app/util/template"
+	paymentServiceIntegration "go-boilerplate/common/integration/payment_service"
+	"go-boilerplate/common/util/logutil"
+	"go-boilerplate/common/util/template"
+	"go-boilerplate/core/service/cache"
+	coreModel "go-boilerplate/core/shared/model"
+	orderServiceValidation "go-boilerplate/core/validation/order_service_validation"
 )
 
 const SERVICE_NAME = "service.OrderService"
 
 type OrderService interface {
-	Pay(ctx context.Context, trxId string) (resp string, err error)
+	Pay(ctx context.Context, trxId string) (resp OrderPayResponse)
 }
 
 type orderServiceImpl struct {
-	paymentServiceClient payment_service.PaymentServiceClient
+	paymentServiceClient paymentServiceIntegration.PaymentServiceClient
+	cacheClient          cache.CacheService
 }
 
-func NewOrderService(client payment_service.PaymentServiceClient) OrderService {
+func NewOrderService(paymentServiceClient paymentServiceIntegration.PaymentServiceClient,
+	cacheService cache.CacheService) OrderService {
 	return &orderServiceImpl{
-		client,
+		paymentServiceClient,
+		cacheService,
 	}
 }
 
-func (p orderServiceImpl) Pay(ctx context.Context, trxId string) (resp string, err error) {
+func (p orderServiceImpl) Pay(ctx context.Context, trxId string) (resp OrderPayResponse) {
+
+	var err error
 
 	err = template.ServiceTemplateExec(ctx,
 		SERVICE_NAME,
@@ -36,23 +45,38 @@ func (p orderServiceImpl) Pay(ctx context.Context, trxId string) (resp string, e
 
 		//process
 		func(ctx context.Context, request any) (any, error) {
-			resp, err = p.payInnerServiceProcess(ctx, trxId)
+			resp.Status, err = p.payInnerServiceProcess(ctx, trxId)
+			if err != nil {
+				logutil.LogError(ctx, "failed when doing pay", err.Error())
+				return resp, err
+			}
+
+			p.cacheClient.SetNamespace(SERVICE_NAME).SetString(ctx, "payResult", resp.Status)
 			return resp, err
-		}, nil,
+		},
+
+		//post result
+		func(request, result any) {
+			coreModel.ResolveAppError(err, &resp.BaseServiceResponse)
+			p.cacheClient.SetNamespace(SERVICE_NAME).Clean(ctx)
+		},
 	)
 
 	return
 }
 
-func (p orderServiceImpl) payValidate(trxId string) error {
+func (p orderServiceImpl) payValidate(trxId string) (err error) {
 	if trxId == "" {
 		return errors.New("trxId cannot be empty")
 	}
-	return nil
+
+	err = orderServiceValidation.TrxIdIsPayable(trxId)
+
+	return err
 }
 
 func (p orderServiceImpl) payInnerServiceProcess(ctx context.Context, trxId string) (resp string, err error) {
-	payRequest := payment_service.PayRequest{trxId}
+	payRequest := paymentServiceIntegration.PayRequest{TrxId: trxId}
 	paymentResp, err := p.paymentServiceClient.Pay(ctx, payRequest)
 	if err != nil {
 		return "", err

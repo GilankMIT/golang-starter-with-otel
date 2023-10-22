@@ -1,24 +1,24 @@
 package infra
 
 import (
-	paymentServiceIntegration "go-otel-example/app/integration/payment_service"
-	integrationShared "go-otel-example/app/integration/shared"
-	orderService "go-otel-example/app/service/order_service"
-	serviceShared "go-otel-example/app/service/shared"
+	"go-boilerplate/common/integration/payment_service"
+	"go-boilerplate/common/integration/shared"
+	orderService "go-boilerplate/service/order_service"
+	serviceShared "go-boilerplate/service/shared"
 )
 
-func GetOptions() (serviceShared.ServiceOptions, error) {
+func GetOptions(infraOption InfraOption) (serviceShared.ServiceOptions, error) {
 	clientOption, err := GetIntegration()
 	if err != nil {
 		return serviceShared.ServiceOptions{}, err
 	}
 	return serviceShared.ServiceOptions{
-		orderService.NewOrderService(clientOption.PaymentServiceClient),
+		orderService.NewOrderService(clientOption.PaymentServiceClient, infraOption.CacheService),
 	}, nil
 }
 
-func GetIntegration() (integrationShared.ClientOption, error) {
-	return integrationShared.ClientOption{
-		paymentServiceIntegration.NewPaymentServiceClient(),
+func GetIntegration() (shared.ClientOption, error) {
+	return shared.ClientOption{
+		payment_service.NewPaymentServiceClient(),
 	}, nil
 }

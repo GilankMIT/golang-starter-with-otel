@@ -1,7 +1,7 @@
 package shared
 
 import (
-	orderService "go-otel-example/app/service/order_service"
+	orderService "go-boilerplate/service/order_service"
 )
 
 type ServiceOptions struct {

@@ -2,8 +2,8 @@ package model
 
 import (
 	"fmt"
-	"go-otel-example/app/core/shared/enum/app_code"
-	"go-otel-example/app/util/constants"
+	"go-boilerplate/common/util/constants"
+	"go-boilerplate/core/shared/enum/app_code"
 )
 
 type AppError struct {
