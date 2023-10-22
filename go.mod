@@ -1,4 +1,4 @@
-module go-otel
+module go-otel-example
 
 go 1.20
 

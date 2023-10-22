@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"fmt"
-	"go-otel/app/util/constants"
-	"go-otel/app/util/logutil"
+	"go-otel-example/app/util/constants"
+	"go-otel-example/app/util/logutil"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/net/context"

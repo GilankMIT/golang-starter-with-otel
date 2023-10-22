@@ -3,10 +3,13 @@ package payment_service
 import (
 	"context"
 	"errors"
-	"go-otel/app/util/template"
+	"go-otel-example/app/util/httpclient"
+	"go-otel-example/app/util/template"
+	"net/http"
+	"time"
 )
 
-const SERVICE_NAME = "integration.PaymentService"
+const SERVICE_NAME = "integration.OrderService"
 
 type PayRequest struct {
 	TrxId string `json:"trx_id"`
@@ -48,7 +51,8 @@ func (p PaymentServiceClientImpl) Pay(ctx context.Context, req PayRequest) (resp
 
 		//process
 		func(ctx context.Context, request any) (any, error) {
-			//TODO
+			exchangeRequest := p.buildExchangeRequest(request.(PayRequest))
+			httpclient.Exchange(ctx, exchangeRequest)
 			resp = PayResponse{
 				TrxId:      req.TrxId,
 				Status:     3,
@@ -66,4 +70,15 @@ func (p PaymentServiceClientImpl) validatePay(req PayRequest) error {
 		return errors.New("trxId cannot be empty")
 	}
 	return nil
+}
+
+func (p PaymentServiceClientImpl) buildExchangeRequest(req PayRequest) httpclient.ExchangeRequest {
+	return httpclient.ExchangeRequest{
+		Host:    "http://example.com",
+		URI:     "api/v1/test",
+		Method:  http.MethodGet,
+		Payload: nil,
+		Header:  nil,
+		Timeout: time.Second * 10,
+	}
 }

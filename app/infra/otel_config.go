@@ -5,6 +5,7 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
@@ -23,7 +24,7 @@ func NewResource() *resource.Resource {
 		resource.Default(),
 		resource.NewWithAttributes(
 			semconv.SchemaURL,
-			semconv.ServiceName("PaymentService"),
+			semconv.ServiceName("OrderService"),
 			semconv.ServiceVersion("v0.1.0"),
 			attribute.String("environment", "demo"),
 		),
@@ -41,5 +42,6 @@ func NewTraceProvider(ctx context.Context) (*trace.TracerProvider, error) {
 		trace.WithResource(NewResource()))
 
 	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
 	return tp, nil
 }

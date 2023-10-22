@@ -3,8 +3,8 @@ package order_service
 import (
 	"context"
 	"errors"
-	"go-otel/app/integration/payment_service"
-	"go-otel/app/util/template"
+	"go-otel-example/app/integration/payment_service"
+	"go-otel-example/app/util/template"
 )
 
 const SERVICE_NAME = "service.OrderService"

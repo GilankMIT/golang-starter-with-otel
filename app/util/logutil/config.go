@@ -1,12 +1,12 @@
 package logutil
 
 import (
-	"go-otel/app/util/constants"
+	"go-otel-example/app/util/constants"
 	"go.uber.org/zap"
 )
 
 const (
-	LOG_BASE_PATH = "./app/log"
+	LOG_BASE_PATH = "./log"
 
 	APP_DEFAULT_LOG_PATH     = LOG_BASE_PATH + "/" + constants.APP_NAME + "-default.log"
 	APP_INFO_LOG_PATH        = LOG_BASE_PATH + "/" + constants.APP_NAME + "-info.log"

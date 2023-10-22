@@ -2,9 +2,9 @@ package infra
 
 import (
 	"github.com/gorilla/mux"
-	payment_service2 "go-otel/app/delivery/payment_service"
-	shared2 "go-otel/app/service/shared"
-	middleware2 "go-otel/app/util/middleware"
+	orderPayment "go-otel-example/app/delivery/order_payment"
+	shared2 "go-otel-example/app/service/shared"
+	middleware2 "go-otel-example/app/util/middleware"
 	"log"
 	"net/http"
 	"time"
@@ -43,5 +43,5 @@ func registerMiddleware(r *mux.Router) {
 }
 
 func registerRoutes(r *mux.Router, options *shared2.ServiceOptions) {
-	payment_service2.NewPaymentServiceHTTPController(r, options)
+	orderPayment.NewOrderPaymentHTTPController(r, options)
 }

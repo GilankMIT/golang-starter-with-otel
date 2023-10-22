@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 	"flag"
-	"go-otel/app/infra"
-	"go-otel/app/util/constants"
-	"go-otel/app/util/logutil"
+	"go-otel-example/app/infra"
+	"go-otel-example/app/util/constants"
+	"go-otel-example/app/util/httpclient"
+	"go-otel-example/app/util/logutil"
 	"log"
 	"os"
 	"os/signal"
@@ -13,6 +14,10 @@ import (
 )
 
 const SERVICE_NAME = "main"
+
+func init() {
+	httpclient.WITH_PROPAGATION = false
+}
 
 func main() {
 	ctx := context.Background()

@@ -3,7 +3,7 @@ package logutil
 import (
 	"context"
 	"fmt"
-	"go-otel/app/util/constants"
+	"go-otel-example/app/util/constants"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"log"

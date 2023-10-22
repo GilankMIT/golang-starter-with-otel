@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"go-otel/app/util/constants"
-	"go-otel/app/util/logutil"
+	"go-otel-example/app/util/constants"
+	"go-otel-example/app/util/logutil"
 	"go.opentelemetry.io/otel/attribute"
 )
 

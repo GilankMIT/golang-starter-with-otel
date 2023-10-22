@@ -2,7 +2,7 @@ package template
 
 import (
 	"context"
-	"go-otel/app/util/constants"
+	"go-otel-example/app/util/constants"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 )
