@@ -8,6 +8,7 @@ import (
 func ResolveAppError(err error, baseResp *BaseServiceResponse) {
 	if err == nil {
 		baseResp.ResponseCode = app_code.SUCCESS.GetFullCode()
+		baseResp.ResponseDesc = app_code.SUCCESS.Desc
 		baseResp.IsSuccess = true
 		return
 	}
