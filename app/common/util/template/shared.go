@@ -13,6 +13,8 @@ type FuncCallbackProcess func(ctx context.Context, request any) (any, error)
 
 type FuncCallbackPostProcess func(request, result any)
 
+type FuncCallbackPostProcessWithReturn func(request, result any) (res any)
+
 func createNewSpan(ctx context.Context, serviceName string) (appendedCtx context.Context, span trace.Span) {
 	tracerCtx := ctx.Value(constants.TRACER_CTX_KEY)
 	var tracer trace.Tracer
